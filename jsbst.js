@@ -140,6 +140,10 @@ var BST = (function () {
 			return this.contains(data);
 		}
 
+		/**
+		 * Creates a new Node with data, and appends it to the tree.
+		 * @param {*} data - The new Node's data.
+		 */
 		this.insert = function(data) {
 			if (this.root == null) {
 				var newNode = new Node(data);
@@ -164,19 +168,39 @@ var BST = (function () {
 			insertRecursive(this.root, data);
 		}
 
+		this.delete = function(data) {
+			this.checkType(data);
+			function deleteRecursive(node, data) {
+				if (node == null) return;
+				if (node.data == data) {
+
+				}
+				if (node.data < data) {
+					node.right = deleteRecursive(node.right, data);
+				} else if (node.data > data) {
+					node.left = deleteRecursive(node.left, data);
+				}
+			}
+			deleteRecursive(this.root, data);
+		}
+
 		/**
 		 * Traverse the tree to the left until it cannot be traversed to the left any more.
 		 * Then return the previous left-most node.
 		 * @returns {Node} Node object representing the node with the smallest data in the tree.
 		 */
-		this.min = function() {
+		this.min = function(root) {
 			function minRecursive(node) {
 				if (node.left) {
 					return minRecursive(node.left);
 				}
 				return node;
 			}
-			return minRecursive(this.root);
+			if (root === undefined) {
+				return minRecursive(this.root);
+			} else {
+				return minRecursive(root);
+			}
 		}
 
 		/**
@@ -184,14 +208,18 @@ var BST = (function () {
 		 * Then return the previous right-most node.
 		 * @returns {Node} Node object representing the node with the largest data in the tree.
 		 */
-		this.max = function() {
+		this.max = function(root) {
 			function maxRecursive(node) {
 				if (node.right) {
 					return maxRecursive(node.right);
 				}
 				return node;
 			}
-			return maxRecursive(this.root);
+			if (root === undefined) {
+				return maxRecursive(this.root);
+			} else {
+				return maxRecursive(root);
+			}
 		}
 
 		/**
@@ -238,6 +266,24 @@ var BST = (function () {
 		 */
 		this.countLeafNodes = function() {
 			return this.getLeafNodes().length;
+		}
+
+		/**
+		 * Returns the height of the tree.
+		 * @returns {number} Height of the tree.
+		 */
+		this.height = function() {
+			function heightRecursive(node, depth) {
+				if (node == null) return 0;
+				var leftDepth = heightRecursive(node.left);
+				var rightDepth = heightRecursive(node.right);
+				if (leftDepth > rightDepth) {
+					return leftDepth + 1;
+				} else {
+					return rightDepth + 1;
+				}
+			}
+			return heightRecursive(this.root);
 		}
 
 		/**
